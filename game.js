@@ -1,5 +1,5 @@
 
-export {};
+// export {};
 
 
 
@@ -43,6 +43,7 @@ class Frog {
         //Mouth
         ctx.save();
         ctx.fillStyle = "white";
+        ctx.beginPath();
         ctx.roundRect(x+20, y+45, 50, 2, 2);
         ctx.fill();
         ctx.restore();
