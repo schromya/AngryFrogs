@@ -75,7 +75,6 @@ class Frog {
 
 
     animate() {
-        ctx.scale(2,2)
         this.drawFrog()
 
     }
