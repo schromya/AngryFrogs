@@ -4,7 +4,7 @@
 
 
 class Frog {
-    constructor(canvas, ctx, x, y) {
+    constructor(canvas, ctx, x, y, groundX, groundY) {
         this.ctx = ctx;
         this.canvas = canvas
         this.fill = "#4B5320";
@@ -14,12 +14,13 @@ class Frog {
         this.x = x;
         this.y = y;
 
+        
         // Where frog leg feet "sticK". The top of the legs
         // stay attached to the frog body.
-        this.footLeftX = 100;
-        this.footLeftY = 200;
-        this.footRightX = 180;
-        this.footRightY = 200;
+        this.footLeftX = groundX;
+        this.footLeftY = groundY;
+        this.footRightX = groundX + 80;
+        this.footRightY = groundY;
 
         // Body dimensions (legs stretch beyond)
         this.WIDTH = 90;
@@ -27,6 +28,13 @@ class Frog {
 
         // For movement
         this.inBounds = false;
+
+        // For jump
+        this.isJumping = false;
+        this.yBeforeJump = y;
+        this.tBeforeJump = 0;
+        this.velocity = 0.001; // Should be constant. Initial Velocity
+        this.angle = 2.14; // TODO CALCULATE
     }
 
 
@@ -100,6 +108,7 @@ class Frog {
     is the top, left of the rectangle
     */
     drawFrogLeg(x,y, footX, footY) {
+        // TODO: Make these frog legs bent in the middle
         ctx.beginPath();
         ctx.moveTo(x, y);
         ctx.lineTo(x+10, y);
@@ -109,6 +118,20 @@ class Frog {
         ctx.closePath()
         ctx.fill();
 
+    }
+
+    /*
+    Makes the frog jump in projectile motion. Based off the
+    set initial velocity and the angle of the body and legs
+    */
+    jump() {
+        const g = 9.81;
+
+        this.y = this.yBeforeJump + (this.velocity * Math.sin(this.angle)) * this.t - 1/2* g * this.t**2 * this.t**2;
+        this.x = this.velocity * Math.cos(this.angle) * this.t;
+
+        this.t += 0.001; //TODO change this
+        
     }
 
     /*
@@ -141,12 +164,19 @@ class Frog {
 
     onMouseRelease() {
         this.inBounds = false;
+        this.tBeforeJump = 0;
+        this.yBeforeJump = this.y;
+        this.isJumping = true;
     }
 
 
     animate() {
+        if (this.isJumping) {
+            // this.jump();
+        }
         
-        this.drawFrog()
+        this.drawFrog();
+
 
     }
 }
@@ -160,7 +190,7 @@ class Frog {
 
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext('2d');
-const frog =  new Frog(canvas, ctx, 100, 100);
+const frog =  new Frog(canvas, ctx, 100, 600, 100, 700);
 
 /* 
 Get the mouse position relative to a canvas. Source: Gleicher.
