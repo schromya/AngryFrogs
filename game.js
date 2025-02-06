@@ -14,10 +14,25 @@ class Frog {
         this.x = x;
         this.y = y;
 
+        // Where frog leg feet "sticK". The top of the legs
+        // stay attached to the frog body.
+        this.footLeftX = 100;
+        this.footLeftY = 200;
+        this.footRightX = 180;
+        this.footRightY = 200;
+
+        // Body dimensions (legs stretch beyond)
+        this.WIDTH = 90;
+        this.HEIGHT = 80;
+
+        // For movement
+        this.inBounds = false;
     }
 
 
-    // Frig "square" is 100x80
+    /*
+    Frog body "square" is 90 wide x 80 tall, legs stretch beyond
+    */
     drawFrog() {
         const x = this.x;
         const y = this.y;
@@ -48,10 +63,17 @@ class Frog {
         ctx.fill();
         ctx.restore();
 
+        //Legs
+        this.drawFrogLeg(x+10, y+65, this.footLeftX, this.footLeftY);
+        this.drawFrogLeg(x+70, y+65, this.footRightX, this.footRightY);
+        // this.drawFrogLeg(x+20, y+20, this.footRightX, this.footRighttY);
+
         ctx.restore();
     }
 
-    // (x,y) is lower left of eye socket.
+    /*
+    (x,y) is lower left of eye socket.
+    */
     drawFrogEye(x, y) {
 
         // Eye Socket
@@ -73,8 +95,27 @@ class Frog {
 
     }
 
+    /* 
+    x, y is where the leg (rectangle) connects to the frog. Tx,y
+    is the top, left of the rectangle
+    */
+    drawFrogLeg(x,y, footX, footY) {
+        ctx.beginPath();
+        ctx.moveTo(x, y);
+        ctx.lineTo(x+10, y);
+
+        ctx.lineTo(footX+10, footY)
+        ctx.lineTo(footX, footY)
+        ctx.closePath()
+        ctx.fill();
+
+    }
+
+
+
 
     animate() {
+        ctx.scale(2/3,2/3)
         this.drawFrog()
 
     }
