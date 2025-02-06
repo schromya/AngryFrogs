@@ -34,8 +34,8 @@ class Frog {
     Frog body "square" is 90 wide x 80 tall, legs stretch beyond
     */
     drawFrog() {
-        const x = this.x;
-        const y = this.y;
+        let x = this.x;
+        let y = this.y;
 
         ctx.save();
         
@@ -111,11 +111,41 @@ class Frog {
 
     }
 
+    /*
+    Checks whether the passed mouse x and y positions
+    are touching the frog.
+    */
+    setIfInBounds(xMouse, yMouse) {
 
+        if (xMouse >= this.x && 
+            xMouse <= this.x + this.WIDTH &&
+            yMouse >= this.y && 
+            yMouse <= this.y + this.HEIGHT) {
+                this.inBounds = true;
+               
+        } else {
+            this.inBounds = false;
+        }
+    }
+
+    /*
+    Moves frog body (NOT LEGS) based on new mouse x and y
+    positions if mouse was previously in bound for onClick.
+    */
+    onMouseMove(xMouse, yMouse) {
+        if (this.inBounds) {
+            this.x = xMouse;
+            this.y = yMouse;
+        }
+    }
+
+    onMouseRelease() {
+        this.inBounds = false;
+    }
 
 
     animate() {
-        ctx.scale(2/3,2/3)
+        
         this.drawFrog()
 
     }
@@ -127,7 +157,45 @@ class Frog {
 //////////////////////////////////////////////////////////
 
 
+
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext('2d');
 const frog =  new Frog(canvas, ctx, 100, 100);
-frog.animate();
+
+/* 
+Get the mouse position relative to a canvas. Source: Gleicher.
+*/
+function mousePosition(evt) {
+    const x = evt.clientX;
+    const y = evt.clientY;
+    const canvasbox = canvas.getBoundingClientRect();
+    return [x - canvasbox.left, y - canvasbox.top];
+}
+
+
+canvas.addEventListener("mousedown", (event) => {
+    const pos = mousePosition(event);
+    frog.setIfInBounds(...pos);
+});
+
+canvas.addEventListener("mousemove", (event) => {
+    const pos = mousePosition(event);
+    frog.onMouseMove(...pos);
+});
+
+canvas.addEventListener("mouseup", (event) => {
+    frog.onMouseRelease();
+});
+
+
+
+// the animation loop - we can have 1 function for both elements
+function animationLoop(timestamp) {
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    frog.animate();
+    window.requestAnimationFrame(animationLoop);
+}
+window.requestAnimationFrame(animationLoop);
+
+
+
