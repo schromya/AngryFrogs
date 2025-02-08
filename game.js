@@ -10,21 +10,27 @@ class Frog {
         this.fill = "#4B5320";
         this.stroke = "black";
 
+        // Body dimensions 
+        this.LEG_HEIGHT = 30;
+        this.BODY_HEIGHT = 70; // Bezeir curve technically goes over this but this is good enough
+
+        this.WIDTH = 90;
+        this.HEIGHT = this.LEG_HEIGHT + this.BODY_HEIGHT;
+
         // (x,y) is the upper left of the frog body as a square
-        this.x = x;
-        this.y = y;
+        this.x = groundX;
+        this.y = groundY - this.HEIGHT;
 
         this.groundX = groundX;
         this.groundY = groundY;
         
-
-
         this.isLegsCollapsed = false;
         
 
-        // Body dimensions (legs stretch beyond)
-        this.WIDTH = 90;
-        this.HEIGHT = 80;
+
+
+        
+        
 
         // For movement
         this.inBounds = false;
@@ -34,7 +40,7 @@ class Frog {
         this.x0 = 0;
         this.y0 = 0;  // Initial Y before jump
         this.yPrev = 0;
-        this.v0 = 120;  // Initial Velocity of jump
+        this.v0 = 110;  // Initial Velocity of jump
         this.O = 0; // Angle of jump TODO CALCULATE
         this.t = 0;
 
@@ -80,11 +86,11 @@ class Frog {
 
         // Legs attached to body
         if (this.isLegsCollapsed) {
-            this.drawFrogLeg(x+10, y+65, x+5, y+95);
-            this.drawFrogLeg(x+70, y+65, x+75, y+95);
+            this.drawFrogLeg(x+10, y+this.BODY_HEIGHT, x+5, y+this.BODY_HEIGHT+this.LEG_HEIGHT);
+            this.drawFrogLeg(x+70, y+this.BODY_HEIGHT, x+75, y+this.BODY_HEIGHT+this.LEG_HEIGHT);
         } else { // Legs attached to ground
-            this.drawFrogLeg(x+10, y+65, this.groundX, this.groundY);
-            this.drawFrogLeg(x+70, y+65, this.groundX+80, this.groundY);
+            this.drawFrogLeg(x+10, y+this.BODY_HEIGHT , this.groundX, this.groundY);
+            this.drawFrogLeg(x+70, y+this.BODY_HEIGHT , this.groundX+80, this.groundY);
         }
 
 
@@ -152,7 +158,11 @@ class Frog {
 
         // Jump ends once reach ground y position 
         const isDecreasing = this.y > this.yPrev;
-        if (this.y + this.HEIGHT >= this.groundY && isDecreasing) this.isJumping = false; 
+        if (this.y + this.HEIGHT >= this.groundY && isDecreasing) {
+            this.isJumping = false; 
+            this.isLegsCollapsed = false;
+            this.groundX = this.x;
+        } 
 
         this.yPrev = this.y;
         
