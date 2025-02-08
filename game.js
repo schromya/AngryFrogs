@@ -31,10 +31,11 @@ class Frog {
 
         // For jump
         this.isJumping = false;
-        this.yBeforeJump = y;
-        this.tBeforeJump = 0;
-        this.velocity = 0.001; // Should be constant. Initial Velocity
-        this.angle = 2.14; // TODO CALCULATE
+        this.x0 = 0;
+        this.y0 = 0;  // Initial Y before jump
+        this.v0 = 100;  // Initial Velocity of jump
+        this.O = -.785; // Angle of jump TODO CALCULATE
+        this.t = 0;
     }
 
 
@@ -125,12 +126,18 @@ class Frog {
     set initial velocity and the angle of the body and legs
     */
     jump() {
-        const g = 9.81;
+        
+   
+        console.log(this.x, this.y)
+        const g = 9.81;  // Gravity is updward bc axis is flipped
 
-        this.y = this.yBeforeJump + (this.velocity * Math.sin(this.angle)) * this.t - 1/2* g * this.t**2 * this.t**2;
-        this.x = this.velocity * Math.cos(this.angle) * this.t;
+        this.y = this.v0 * Math.sin(this.O) * this.t + 0.5 * g * this.t**2 + this.y0;
+        this.x = this.v0 * Math.cos(this.O) * this.t + this.x0;
 
-        this.t += 0.001; //TODO change this
+        this.t += 0.1; //TODO change this
+
+        // Jump ends once reach original y position again.
+        if (this.y > this.y0) this.isJumping = false;
         
     }
 
@@ -164,15 +171,18 @@ class Frog {
 
     onMouseRelease() {
         this.inBounds = false;
-        this.tBeforeJump = 0;
-        this.yBeforeJump = this.y;
+        this.t = 0;
+        this.y0 = this.y;
+        this.x0 = this.x;
+        
+
         this.isJumping = true;
     }
 
 
     animate() {
         if (this.isJumping) {
-            // this.jump();
+            this.jump();
         }
         
         this.drawFrog();
