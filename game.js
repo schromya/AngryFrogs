@@ -14,14 +14,13 @@ class Frog {
         this.x = x;
         this.y = y;
 
+        this.groundX = groundX;
         this.groundY = groundY;
+        
 
-        // Where frog leg feet "sticK". The top of the legs
-        // stay attached to the frog body.
-        this.footLeftX = groundX;
-        this.footLeftY = groundY;
-        this.footRightX = groundX + 80;
-        this.footRightY = groundY;
+
+        this.isLegsCollapsed = false;
+        
 
         // Body dimensions (legs stretch beyond)
         this.WIDTH = 90;
@@ -35,9 +34,11 @@ class Frog {
         this.x0 = 0;
         this.y0 = 0;  // Initial Y before jump
         this.yPrev = 0;
-        this.v0 = 100;  // Initial Velocity of jump
-        this.O = -.785; // Angle of jump TODO CALCULATE
+        this.v0 = 120;  // Initial Velocity of jump
+        this.O = 0; // Angle of jump TODO CALCULATE
         this.t = 0;
+
+
         
     }
 
@@ -75,10 +76,17 @@ class Frog {
         ctx.fill();
         ctx.restore();
 
-        //Legs
-        this.drawFrogLeg(x+10, y+65, this.footLeftX, this.footLeftY);
-        this.drawFrogLeg(x+70, y+65, this.footRightX, this.footRightY);
-        // this.drawFrogLeg(x+20, y+20, this.footRightX, this.footRighttY);
+
+
+        // Legs attached to body
+        if (this.isLegsCollapsed) {
+            this.drawFrogLeg(x+10, y+65, x+5, y+95);
+            this.drawFrogLeg(x+70, y+65, x+75, y+95);
+        } else { // Legs attached to ground
+            this.drawFrogLeg(x+10, y+65, this.groundX, this.groundY);
+            this.drawFrogLeg(x+70, y+65, this.groundX+80, this.groundY);
+        }
+
 
         ctx.restore();
     }
@@ -119,6 +127,7 @@ class Frog {
 
         ctx.lineTo(footX+10, footY)
         ctx.lineTo(footX, footY)
+
         ctx.closePath()
         ctx.fill();
 
@@ -135,7 +144,11 @@ class Frog {
         this.y = this.v0 * Math.sin(this.O) * this.t + 0.5 * g * this.t**2 + this.y0;
         this.x = this.v0 * Math.cos(this.O) * this.t + this.x0;
 
-        this.t += 0.1; //TODO change this
+        this.t += .2; //TODO change this
+
+        // "Collapse" legs one body jumps above ground
+        if (this.y + this.HEIGHT <= this.groundY) this.isLegsCollapsed = true;
+
 
         // Jump ends once reach ground y position 
         const isDecreasing = this.y > this.yPrev;
@@ -181,6 +194,9 @@ class Frog {
         this.yPrev = this.y0;
         this.x0 = this.x;
 
+        //Calculate angle of frog
+        this.O =  Math.atan2((this.groundX - this.y), (this.groundY - this.x));
+
         this.isJumping = true;
     }
 
@@ -205,7 +221,7 @@ class Frog {
 
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext('2d');
-const frog =  new Frog(canvas, ctx, 100, 600, 100, 700);
+const frog =  new Frog(canvas, ctx, 200, 600, 200, 700);
 
 /* 
 Get the mouse position relative to a canvas. Source: Gleicher.
