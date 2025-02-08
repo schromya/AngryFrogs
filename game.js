@@ -14,10 +14,10 @@ class Frog {
         this.x = x;
         this.y = y;
 
-        
+        this.groundY = groundY;
+
         // Where frog leg feet "sticK". The top of the legs
         // stay attached to the frog body.
-        this.groundY = groundY;
         this.footLeftX = groundX;
         this.footLeftY = groundY;
         this.footRightX = groundX + 80;
@@ -34,9 +34,11 @@ class Frog {
         this.isJumping = false;
         this.x0 = 0;
         this.y0 = 0;  // Initial Y before jump
+        this.yPrev = 0;
         this.v0 = 100;  // Initial Velocity of jump
         this.O = -.785; // Angle of jump TODO CALCULATE
         this.t = 0;
+        
     }
 
 
@@ -128,8 +130,6 @@ class Frog {
     */
     jump() {
         
-   
-        console.log(this.x, this.y)
         const g = 9.81;  // Gravity is updward bc axis is flipped
 
         this.y = this.v0 * Math.sin(this.O) * this.t + 0.5 * g * this.t**2 + this.y0;
@@ -137,8 +137,11 @@ class Frog {
 
         this.t += 0.1; //TODO change this
 
-        // Jump ends once reach ground y position again.
-        if (this.y >= this.groundY) this.isJumping = false;
+        // Jump ends once reach ground y position 
+        const isDecreasing = this.y > this.yPrev;
+        if (this.y + this.HEIGHT >= this.groundY && isDecreasing) this.isJumping = false; 
+
+        this.yPrev = this.y;
         
     }
 
@@ -170,12 +173,13 @@ class Frog {
         }
     }
 
+
     onMouseRelease() {
         this.inBounds = false;
         this.t = 0;
         this.y0 = this.y;
+        this.yPrev = this.y0;
         this.x0 = this.x;
-        
 
         this.isJumping = true;
     }
