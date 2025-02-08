@@ -152,13 +152,13 @@ class Frog {
     }
 
     /*
-    Moves frog body (NOT LEGS) based on new mouse x and y
+    Moves the middle of the frog body (NOT LEGS) based to the new mouse x and y
     positions if mouse was previously in bound for onClick.
     */
     onMouseMove(xMouse, yMouse) {
         if (this.inBounds) {
-            this.x = xMouse;
-            this.y = yMouse;
+            this.x = xMouse - this.WIDTH / 2;
+            this.y = yMouse - this.HEIGHT / 2;
         }
     }
 
