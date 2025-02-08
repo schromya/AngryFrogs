@@ -17,6 +17,7 @@ class Frog {
         
         // Where frog leg feet "sticK". The top of the legs
         // stay attached to the frog body.
+        this.groundY = groundY;
         this.footLeftX = groundX;
         this.footLeftY = groundY;
         this.footRightX = groundX + 80;
@@ -136,8 +137,8 @@ class Frog {
 
         this.t += 0.1; //TODO change this
 
-        // Jump ends once reach original y position again.
-        if (this.y > this.y0) this.isJumping = false;
+        // Jump ends once reach ground y position again.
+        if (this.y >= this.groundY) this.isJumping = false;
         
     }
 
