@@ -1,5 +1,5 @@
 import { Frog } from './Frog.js';
-
+import { Stud } from './Stud.js';
 
 ////////////////////////// MAIN //////////////////////////
 //////////////////////////////////////////////////////////
@@ -9,7 +9,20 @@ import { Frog } from './Frog.js';
 
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext('2d');
-const frog =  new Frog(canvas, ctx, 200, 600, 200, 700);
+const frog =  new Frog(canvas, ctx, 200, 700);
+
+const studs = [
+    new Stud(canvas, ctx, 1000, 700, 30, -50),
+    new Stud(canvas, ctx, 1030, 700, 30, -50),
+    new Stud(canvas, ctx, 1000, 648, 60, -30),
+    new Stud(canvas, ctx, 1065, 700, 20, -200),
+    new Stud(canvas, ctx, 1200, 700, 20, -200),
+    new Stud(canvas, ctx, 1040, 500, 250, -20),
+    new Stud(canvas, ctx, 1040, 480, 200, -20),
+    
+    
+];
+
 
 /* 
 Get the mouse position relative to a canvas. Source: Gleicher.
@@ -42,6 +55,9 @@ canvas.addEventListener("mouseup", (event) => {
 function animationLoop(timestamp) {
     ctx.clearRect(0,0,canvas.width,canvas.height);
     frog.animate();
+
+    studs.forEach((stud) => stud.animate())
+
     window.requestAnimationFrame(animationLoop);
 }
 window.requestAnimationFrame(animationLoop);

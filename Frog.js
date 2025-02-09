@@ -1,8 +1,10 @@
 
 export class Frog {
-    constructor(canvas, ctx, x, y, groundX, groundY) {
-        this.ctx = ctx;
+    constructor(canvas, ctx, groundX, groundY) {
+        //TODO possibly rename groundX to positionX
+        
         this.canvas = canvas
+        this.ctx = ctx;
         this.fill = "#4B5320";
         this.stroke = "black";
 
@@ -23,7 +25,6 @@ export class Frog {
         this.isLegsCollapsed = false;
     
         
-
         // For movement
         this.inBounds = false;
 
