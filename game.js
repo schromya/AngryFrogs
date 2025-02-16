@@ -14,9 +14,9 @@ const ctx = canvas.getContext('2d');
 const environmentElems = [
 
     
-    new Stud(canvas, ctx, 1040, 300, 300, 20),
-    new Stud(canvas, ctx, 900, 500, 300, 20),
-    new Stud(canvas, ctx, 1000, 618, 300, 20),
+    new Stud(canvas, ctx, 1040, 200, 300, 20),
+    new Stud(canvas, ctx, 900, 300, 300, 20),
+    new Stud(canvas, ctx, 795, 590, 300, 20),
 
     new CurvedBeam(canvas, ctx, 300, 300, 500, 300),
     
