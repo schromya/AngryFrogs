@@ -1,5 +1,5 @@
 import { Frog } from './Frog.js';
-import { Stud } from './EnvironmentalElement.js';
+import { Stud, CurvedBeam } from './EnvironmentalElement.js';
 
 ////////////////////////// MAIN //////////////////////////
 //////////////////////////////////////////////////////////
@@ -14,9 +14,11 @@ const ctx = canvas.getContext('2d');
 const environmentElems = [
 
     
-    new Stud(canvas, ctx, 1040, 460, 300, 20),
-    new Stud(canvas, ctx, 500, 500, 300, 20),
-    new Stud(canvas, ctx, 1000, 618, 300, 20),
+    new Stud(canvas, ctx, 1040, 460, 300, -20),
+    new Stud(canvas, ctx, 500, 500, 300, -20),
+    new Stud(canvas, ctx, 1000, 618, 300, -20),
+
+    new CurvedBeam(canvas, ctx, 500, 618, 500, 300),
     
     
 ];
