@@ -1,5 +1,5 @@
 import { Frog } from './Frog.js';
-import { Stud } from './Stud.js';
+import { Stud } from './EnvironmentalElement.js';
 
 ////////////////////////// MAIN //////////////////////////
 //////////////////////////////////////////////////////////
@@ -9,9 +9,9 @@ import { Stud } from './Stud.js';
 
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext('2d');
-const frog =  new Frog(canvas, ctx, 200, 700);
 
-const studs = [
+
+const environmentElems = [
     new Stud(canvas, ctx, 1000, 700, 30, -50),
     new Stud(canvas, ctx, 1030, 700, 30, -50),
     new Stud(canvas, ctx, 1000, 648, 60, -30),
@@ -22,6 +22,9 @@ const studs = [
     
     
 ];
+
+
+const frog =  new Frog(canvas, ctx, 200, 700, environmentElems);
 
 
 /* 
@@ -54,9 +57,9 @@ canvas.addEventListener("mouseup", (event) => {
 // the animation loop - we can have 1 function for both elements
 function animationLoop(timestamp) {
     ctx.clearRect(0,0,canvas.width,canvas.height);
-    frog.animate();
 
-    studs.forEach((stud) => stud.animate())
+    environmentElems.forEach((elem) => elem.animate());
+    frog.animate();
 
     window.requestAnimationFrame(animationLoop);
 }

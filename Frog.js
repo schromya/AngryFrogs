@@ -2,11 +2,23 @@
 import { scaleValue } from './utils.js';
 
 export class Frog {
-    constructor(canvas, ctx, groundX, groundY) {
-        //TODO possibly rename groundX to positionX
+
+    /*
+    environElems is a list of game elements of classes inheritated
+    from class EnvironmentalElement 
+    */
+    constructor(canvas, ctx, groundX, groundY, environElems) {
         
         this.canvas = canvas
         this.ctx = ctx;
+
+        // Where frog legs are grounded (lower left corner)
+        this.baseX = groundX; 
+        this.baseY = groundY;
+        this.GROUND_Y = groundY; // Absolute Ground
+
+        this.environElems = environElems;
+
         this.fill = "#4B5320";
         this.stroke = "black";
 
@@ -21,8 +33,7 @@ export class Frog {
         this.x = groundX;
         this.y = groundY - this.HEIGHT;
 
-        this.groundX = groundX;
-        this.groundY = groundY;
+
         
         this.isLegsCollapsed = false;
     
@@ -85,8 +96,8 @@ export class Frog {
             this.drawFrogLeg(x+10, y+this.BODY_HEIGHT, x+5, y+this.BODY_HEIGHT+this.LEG_HEIGHT);
             this.drawFrogLeg(x+70, y+this.BODY_HEIGHT, x+75, y+this.BODY_HEIGHT+this.LEG_HEIGHT);
         } else { // Legs attached to ground
-            this.drawFrogLeg(x+10, y+this.BODY_HEIGHT , this.groundX, this.groundY);
-            this.drawFrogLeg(x+70, y+this.BODY_HEIGHT , this.groundX+80, this.groundY);
+            this.drawFrogLeg(x+10, y+this.BODY_HEIGHT , this.baseX, this.baseY);
+            this.drawFrogLeg(x+70, y+this.BODY_HEIGHT , this.baseX+80, this.baseY);
         }
 
 
@@ -140,7 +151,7 @@ export class Frog {
 
     /*
     Makes the frog jump in projectile motion. Based off the
-    set initial velocity and the angle of the body and legs
+    set initial velocity and the angle of the body and legs.
     */
     jump() {
         
@@ -151,18 +162,26 @@ export class Frog {
 
         this.t += .2; //TODO change this
 
-        // "Collapse" legs once body jumps above ground
-        if (this.y + this.HEIGHT <= this.groundY) this.isLegsCollapsed = true;
+        // "Collapse" legs once body jumps above "ground"
+        if (this.y + this.HEIGHT <= this.baseY) this.isLegsCollapsed = true;
 
 
-        // Jump ends once reach ground y position 
+        // Jump ends once reach ground y position OR when intersects something after decreasing
         const isDecreasing = this.y > this.yPrev;
-        if (this.y + this.HEIGHT >= this.groundY && isDecreasing) {
+        const isIntersection = this.environElems.some(elem => elem.checkIntersection(this.x, this.y, this.WIDTH, this.HEIGHT, -5));
+        
+        if (  isDecreasing && (this.y + this.HEIGHT >= this.baseY) ) {
             this.isJumping = false; 
             this.isLegsCollapsed = false;
-            this.groundX = this.x;
-            this.y = this.groundY - this.HEIGHT;
-        } 
+            this.baseX = this.x;
+            this.baseY = this.GROUND_Y;
+            this.y = this.baseY - this.HEIGHT;  // Force a consistant height off the ground
+        }else if (  isDecreasing && isIntersection) {
+            this.isJumping = false; 
+            this.isLegsCollapsed = false;
+            this.baseX = this.x;
+            this.baseY = this.y + this.HEIGHT;
+        }
 
         this.yPrev = this.y;
         
@@ -211,8 +230,8 @@ export class Frog {
             this.yPrev = this.y0;
             this.x0 = this.x;
 
-            const yPull = this.groundY - (this.y + this.HEIGHT);
-            const xPull = this.groundX - this.x;
+            const yPull = this.baseY - (this.y + this.HEIGHT);
+            const xPull = this.baseX - this.x;
 
             // Calculate jump angle of frog  based off its angle with the ground
             this.O =  Math.atan2(yPull, xPull);
@@ -220,7 +239,7 @@ export class Frog {
             // Calculate the jump velocity based on the current "pull" distnace on the frog 
             // and the max pull distance (estimated as ground distance from canvas bottom)
             const distancePulled = Math.sqrt(yPull**2 + xPull**2);
-            this.v0 = scaleValue(distancePulled, 0, this.canvas.height-this.groundY, 30, 150)
+            this.v0 = scaleValue(distancePulled, 0, this.canvas.height-this.baseY, 30, 150)
 
             this.isJumping = true;
         }
