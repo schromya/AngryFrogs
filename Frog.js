@@ -33,6 +33,10 @@ export class Frog {
         this.x = groundX;
         this.y = groundY - this.HEIGHT;
 
+        // o is the clockwise angle (in radians) of the frog taken from the x axis.
+        // The rotation point is the middle, bottom of the frog.
+        this.o = 0;
+
 
         
         this.isLegsCollapsed = false;
@@ -68,44 +72,52 @@ export class Frog {
         const ctx = this.ctx;
 
         ctx.save();
-        
-        ctx.fillStyle = this.fill;
+            ctx.fillStyle = this.fill;
 
-        //Body
-        ctx.beginPath();
-        ctx.moveTo(x+10, y+30);
-        ctx.lineTo(x+80, y+30);
-        ctx.bezierCurveTo(x+80, y+30, x+90, y+50, x+80, y+70);
-        ctx.bezierCurveTo(x+80, y+70, x+50, y+80, x+10, y+70);
-        ctx.bezierCurveTo(x+10, y+70, x, y+50, x+10, y+30);
-        ctx.fill();
+            // Rotate around bottom middle of frog.
+            ctx.translate(x+this.WIDTH/2, y+this.HEIGHT);
+            ctx.rotate(this.o);
+            ctx.translate(-(x+this.WIDTH/2), -(y+this.HEIGHT));
+            
+    
 
-        //Eyes
-        this.drawFrogEye(x+10, y);
-        this.drawFrogEye(x+50, y);
+            // Body
+            ctx.beginPath();
+            ctx.moveTo(x+10, y+30);
+            ctx.lineTo(x+80, y+30);
+            ctx.bezierCurveTo(x+80, y+30, x+90, y+50, x+80, y+70);
+            ctx.bezierCurveTo(x+80, y+70, x+50, y+80, x+10, y+70);
+            ctx.bezierCurveTo(x+10, y+70, x, y+50, x+10, y+30);
+            ctx.fill();
 
-        
-        //Mouth
-        ctx.save();
-        ctx.fillStyle = "white";
-        ctx.beginPath();
-        ctx.roundRect(x+20, y+45, 50, 2, 2);
-        ctx.fill();
+            // Eyes
+            this.drawFrogEye(x+10, y);
+            this.drawFrogEye(x+50, y);
+
+            
+            // Mouth
+            ctx.save();
+                ctx.fillStyle = "white";
+                ctx.beginPath();
+                ctx.roundRect(x+20, y+45, 50, 2, 2);
+                ctx.fill();
+            ctx.restore();
+            
+
+
+
+            // Legs attached to body
+            if (this.isLegsCollapsed) {
+                this.drawFrogLeg(x+10, y+this.BODY_HEIGHT, x+5, y+this.BODY_HEIGHT+this.LEG_HEIGHT);
+                this.drawFrogLeg(x+70, y+this.BODY_HEIGHT, x+75, y+this.BODY_HEIGHT+this.LEG_HEIGHT);
+            } else { // Legs attached to ground
+                this.drawFrogLeg(x+10, y+this.BODY_HEIGHT , this.baseX, this.baseY);
+                this.drawFrogLeg(x+70, y+this.BODY_HEIGHT , this.baseX+80, this.baseY);
+            }
+
+
         ctx.restore();
 
-
-
-        // Legs attached to body
-        if (this.isLegsCollapsed) {
-            this.drawFrogLeg(x+10, y+this.BODY_HEIGHT, x+5, y+this.BODY_HEIGHT+this.LEG_HEIGHT);
-            this.drawFrogLeg(x+70, y+this.BODY_HEIGHT, x+75, y+this.BODY_HEIGHT+this.LEG_HEIGHT);
-        } else { // Legs attached to ground
-            this.drawFrogLeg(x+10, y+this.BODY_HEIGHT , this.baseX, this.baseY);
-            this.drawFrogLeg(x+70, y+this.BODY_HEIGHT , this.baseX+80, this.baseY);
-        }
-
-
-        ctx.restore();
     }
 
     /*
@@ -116,19 +128,19 @@ export class Frog {
 
         // Eye Socket
         ctx.save();
-        ctx.beginPath();
-        ctx.moveTo(x, y+30);
-        ctx.bezierCurveTo(x, y+30, x+15, y, x+30, y+30);
-        ctx.fill();
+            ctx.beginPath();
+            ctx.moveTo(x, y+30);
+            ctx.bezierCurveTo(x, y+30, x+15, y, x+30, y+30);
+            ctx.fill();
 
-        // Eyeball
-        
-        ctx.strokeStyle = "white";
-        ctx.fillStyle = this.fill;
-        ctx.lineWidth = 2;
-        ctx.beginPath();
-        ctx.arc(x+15, y+30, 7.5, 0, 2*Math.PI);
-        ctx.stroke();
+            // Eyeball
+            
+            ctx.strokeStyle = "white";
+            ctx.fillStyle = this.fill;
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.arc(x+15, y+30, 7.5, 0, 2*Math.PI);
+            ctx.stroke();
         ctx.restore();
 
     }
@@ -199,18 +211,20 @@ export class Frog {
         
     }
 
+
     /*
     Interaction is triggered at the end of a jump. Either the frog will land on an enviroment element 
     and stick or slide down the element. After the frog is done interacting wih the element.
     */
     interact() {
         if (this.interactionElem) {
-            let [x, y, O] = this.interactionElem.getNextInteractionPoint();
+            let [x, y, o] = this.interactionElem.getNextInteractionPoint();
 
             // Since interaction point is bottom center of frog that intersects,
             // transpose points to be upper left of frog
             x -= this.WIDTH / 2;
             y -= this.HEIGHT;
+            this.o = o;
 
             // Once not moving anymore, end interaction
             if (this.x == x && this.y == y) {

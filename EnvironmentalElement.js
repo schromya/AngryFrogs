@@ -167,7 +167,7 @@ export class CurvedBeam extends EnvironmentalElement {
             if (this.tInteraction < 1) this.tInteraction += tStep
             const nextP = this.bezier(this.tInteraction);
 
-            const O =  Math.atan2(P[1] - nextP[1], P[0] - nextP[0]); // Angle of slope
+            const O =  Math.atan2(nextP[1] - P[1], nextP[0] - P[0]); // Angle of slope
             
             return [nextP[0], nextP[1], O]
         }
