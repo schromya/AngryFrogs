@@ -13,9 +13,14 @@ export class EnvironmentalElement {
         this.y = y;
         this.width = width;
         this.height = height;
+
+        this.xInteraction = null;
+        this.yInteraction = null;
     }
 
-
+    /*
+    Should be overwritten.
+    */
     draw() {}
 
 
@@ -28,12 +33,26 @@ export class EnvironmentalElement {
         const maxX = Math.max(this.x, this.x + this.width);
         const minY = Math.min(this.y, this.y + this.height);
         const maxY = Math.max(this.y, this.y + this.height);
-        return (
-            x >= minX - buffer &&
+        if (x >= minX - buffer &&
             x <= maxX + buffer &&
             y >= minY - buffer &&
-            y <= maxY + buffer
-        )
+            y <= maxY + buffer) {
+
+            this.xInteraction = x;
+            this.yInteraction = y;
+            return true;
+        } 
+
+        return false
+    }
+
+    /*
+    Defaults to keeping the same position of the last intersection and 
+    an angle of 0 (horizontal) so object remains still on rectangle. 
+    Returns [x, y, angle (in rads)].
+    */
+    getNextInteractionPoint() {
+        return [this.xInteraction, this.yInteraction, 0]
     }
 
     animate() {
@@ -119,16 +138,41 @@ export class CurvedBeam extends EnvironmentalElement {
     */
     checkIntersection(x, y, buffer = 0) {
 
-        const T_STEP = 0.001;
+        const tStep = 0.001;
         const threshold = 5 + buffer;
 
-        for (let t=0; t<=1; t+=T_STEP) {
+        for (let t=0; t<=1; t+=tStep) {
             const P = this.bezier(t);
-            // console.log(x, y, P);
-            if (Math.sqrt((P[0]-x)**2 + (P[1]-y)**2) <= threshold) return true;
+ 
+            if (Math.sqrt((P[0]-x)**2 + (P[1]-y)**2) <= threshold) {
+                this.tInteraction = t;
+                return true;
+            } 
+
         }
         return false;
     }
+
+
+    /*
+    Returns an interaction point and angle that is down the curve
+    so object can "slide" down curve. Returns [x, y, angle (in rads)].
+    */
+    getNextInteractionPoint() {
+        if (this.tInteraction) {
+            const tStep = 0.01;
+
+            const P = this.bezier(this.tInteraction);
+
+            if (this.tInteraction < 1) this.tInteraction += tStep
+            const nextP = this.bezier(this.tInteraction);
+
+            const O =  Math.atan2(P[1] - nextP[1], P[0] - nextP[0]); // Angle of slope
+            
+            return [nextP[0], nextP[1], O]
+        }
+    }
+
 
     /*
     Makes Ease Curve from a cubic bezeir curve.

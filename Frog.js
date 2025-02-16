@@ -47,8 +47,12 @@ export class Frog {
         this.y0 = 0;  // Initial Y before jump
         this.yPrev = 0;
         this.v0 = 100;  // Initial Velocity of jump
-        this.O = 0; // Angle of jump TODO CALCULATE
+        this.o0 = 0; // Angle of jump TODO CALCULATE
         this.t = 0;
+
+        // For interacting with element at end of jump
+        this.isInteractingWithElem = false;
+        this.interactionElem = null;
 
 
         
@@ -149,6 +153,7 @@ export class Frog {
 
     }
 
+
     /*
     Makes the frog jump in projectile motion. Based off the
     set initial velocity and the angle of the body and legs.
@@ -157,8 +162,8 @@ export class Frog {
         
         const g = 9.81;  // Gravity is updward bc axis is flipped
 
-        this.y = this.v0 * Math.sin(this.O) * this.t + 0.5 * g * this.t**2 + this.y0;
-        this.x = this.v0 * Math.cos(this.O) * this.t + this.x0;
+        this.y = this.v0 * Math.sin(this.o0) * this.t + 0.5 * g * this.t**2 + this.y0;
+        this.x = this.v0 * Math.cos(this.o0) * this.t + this.x0;
 
         this.t += .2; //TODO change this
 
@@ -168,9 +173,17 @@ export class Frog {
 
         // Jump ends once reach ground y position OR when intersects an environmental element after decreasing
         const isDecreasing = this.y > this.yPrev;
-        const isIntersection = this.environElems.some(elem => 
-            elem.checkIntersection(this.x + this.WIDTH/2, this.y + this.HEIGHT, 0)); // Check if bottom center of the frog intersects
+
+        // Check if bottom center of the frog intersects
+        const isIntersection = this.environElems.some(elem => {
+            if (elem.checkIntersection(this.x + this.WIDTH / 2, this.y + this.HEIGHT, 0)) {
+                this.interactionElem = elem;
+                return true;
+            }
+            return false;
+        }); 
         
+        // TODO Could potentially change ground to be an element too
         if ( isDecreasing && (this.y + this.HEIGHT >= this.GROUND_Y) ) {
             this.isJumping = false; 
             this.isLegsCollapsed = false;
@@ -179,13 +192,43 @@ export class Frog {
             this.y = this.baseY - this.HEIGHT;  // Force a consistant height off the ground
         }else if (  isDecreasing && isIntersection) {
             this.isJumping = false; 
-            this.isLegsCollapsed = false;
-            this.baseX = this.x;
-            this.baseY = this.y + this.HEIGHT;
+            this.isInteractingWithElem = true;
         }
 
         this.yPrev = this.y;
         
+    }
+
+    /*
+    Interaction is triggered at the end of a jump. Either the frog will land on an enviroment element 
+    and stick or slide down the element. After the frog is done interacting wih the element.
+    */
+    interact() {
+        if (this.interactionElem) {
+            let [x, y, O] = this.interactionElem.getNextInteractionPoint();
+
+            // Since interaction point is bottom center of frog that intersects,
+            // transpose points to be upper left of frog
+            x -= this.WIDTH / 2;
+            y -= this.HEIGHT;
+
+            // Once not moving anymore, end interaction
+            if (this.x == x && this.y == y) {
+                this.isInteractingWithElem = false;
+                this.isLegsCollapsed = false;
+                this.baseX = this.x;
+                this.baseY = this.y + this.HEIGHT;
+                return
+            }
+
+            this.x = x;
+            this.y = y;
+
+            // TODO: HANDLE O
+
+
+        }
+
     }
 
     /*
@@ -194,6 +237,10 @@ export class Frog {
     are touching the frog.
     */
     setIfInBounds(xMouse, yMouse) {
+        if (this.isJumping || this.isInteractingWithElem)  {
+            this.inBounds = false;
+            return;
+        }
 
         if (xMouse >= this.x && 
             xMouse <= this.x + this.WIDTH &&
@@ -235,7 +282,7 @@ export class Frog {
             const xPull = this.baseX - this.x;
 
             // Calculate jump angle of frog  based off its angle with the ground
-            this.O =  Math.atan2(yPull, xPull);
+            this.o0 =  Math.atan2(yPull, xPull);
 
             // Calculate the jump velocity based on the current "pull" distnace on the frog 
             // and the max pull distance (estimated as ground distance from canvas bottom)
@@ -250,6 +297,8 @@ export class Frog {
     animate() {
         if (this.isJumping) {
             this.jump();
+        } else if (this.isInteractingWithElem) {
+            this.interact();
         }
         
         this.drawFrog();
