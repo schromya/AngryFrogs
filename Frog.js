@@ -162,15 +162,16 @@ export class Frog {
 
         this.t += .2; //TODO change this
 
-        // "Collapse" legs once body jumps above "ground"
+        // "Collapse" legs once body jumps above initial base
         if (this.y + this.HEIGHT <= this.baseY) this.isLegsCollapsed = true;
 
 
-        // Jump ends once reach ground y position OR when intersects something after decreasing
+        // Jump ends once reach ground y position OR when intersects an environmental element after decreasing
         const isDecreasing = this.y > this.yPrev;
-        const isIntersection = this.environElems.some(elem => elem.checkIntersection(this.x, this.y, this.WIDTH, this.HEIGHT, -5));
+        const isIntersection = this.environElems.some(elem => 
+            elem.checkIntersection(this.x + this.WIDTH/2, this.y + this.HEIGHT, 0)); // Check if bottom center of the frog intersects
         
-        if (  isDecreasing && (this.y + this.HEIGHT >= this.baseY) ) {
+        if ( isDecreasing && (this.y + this.HEIGHT >= this.GROUND_Y) ) {
             this.isJumping = false; 
             this.isLegsCollapsed = false;
             this.baseX = this.x;

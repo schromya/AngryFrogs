@@ -12,13 +12,13 @@ const ctx = canvas.getContext('2d');
 
 
 const environmentElems = [
-    new Stud(canvas, ctx, 1000, 700, 30, -50),
-    new Stud(canvas, ctx, 1030, 700, 30, -50),
-    new Stud(canvas, ctx, 1000, 648, 60, -30),
-    new Stud(canvas, ctx, 1065, 700, 20, -200),
-    new Stud(canvas, ctx, 1200, 700, 20, -200),
-    new Stud(canvas, ctx, 1040, 500, 250, -20),
-    new Stud(canvas, ctx, 1040, 480, 200, -20),
+    new Stud(canvas, ctx, 1000, 650, 30, 50),
+    new Stud(canvas, ctx, 1030, 650, 30, 50),
+    new Stud(canvas, ctx, 1000, 618, 60, 30),
+    new Stud(canvas, ctx, 1065, 500, 20, 200),
+    new Stud(canvas, ctx, 1200, 500, 20, 200),
+    new Stud(canvas, ctx, 1040, 480, 250, 20),
+    new Stud(canvas, ctx, 1040, 460, 200, 20),
     
     
 ];

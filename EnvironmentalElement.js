@@ -19,18 +19,42 @@ export class EnvironmentalElement {
     draw() {}
 
 
+    // /* 
+    // Checks if the passed rectangle (with top left corner (x,y) and given width/height)
+    // intersects this element with added buffer.
+    // */
+    // checkIntersection(x, y, width, height, buffer) {
+
+    //     return !(
+    //         this.x + this.width + buffer <= x ||  // This element is left of the rectangle
+    //         x + width + buffer <= this.x ||       // This element is right of the rectangle
+    //         this.y + this.height + buffer <= y || // This element is above the rectangle
+    //         y + height + buffer <= this.y         // This element is below the rectangle
+    //     );
+    // }
+
+    
     /* 
-    Checks if the passed rectangle (with top left corner (x,y) and given width/height)
+    Checks if the passed point(x,y )
     intersects this element with added buffer.
     */
-    checkIntersection(x, y, width, height, buffer) {
+    checkIntersection(x, y, buffer = 0) {
+        console.log(`Point: (${x}, ${y})`);
+        console.log(`Rect: (${this.x}, ${this.y}, ${this.width}, ${this.height})`);
+        console.log(`Buffer: ${buffer}`);
+        
+        const check = (
+            x >= this.x - buffer &&
+            x <= this.x + this.width + buffer &&
+            y >= this.y - buffer &&
+            y <= this.y + this.height + buffer
+        )
+        console.log("1", x >= this.x - buffer)
+        console.log("2", x <= this.x + this.width + buffer)
+        console.log("3", y >= this.y - buffer)
+        console.log("4", y <= this.y + this.height + buffer)
 
-        return !(
-            this.x + this.width + buffer <= x ||  // This element is left of the rectangle
-            x + width + buffer <= this.x ||       // This element is right of the rectangle
-            this.y + this.height + buffer <= y || // This element is above the rectangle
-            y + height + buffer <= this.y         // This element is below the rectangle
-        );
+        return(check)
     }
 
     animate() {
