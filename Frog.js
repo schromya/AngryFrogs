@@ -149,7 +149,7 @@ export class Frog {
 
         this.t += .2; //TODO change this
 
-        // "Collapse" legs one body jumps above ground
+        // "Collapse" legs once body jumps above ground
         if (this.y + this.HEIGHT <= this.groundY) this.isLegsCollapsed = true;
 
 
@@ -159,6 +159,7 @@ export class Frog {
             this.isJumping = false; 
             this.isLegsCollapsed = false;
             this.groundX = this.x;
+            this.y = this.groundY - this.HEIGHT;
         } 
 
         this.yPrev = this.y;
@@ -202,8 +203,8 @@ export class Frog {
         this.x0 = this.x;
 
         //Calculate angle of frog
-        this.O =  Math.atan2((this.groundY - this.y), (this.groundX - this.x));
-
+        this.O =  Math.atan2((this.groundY - (this.y + this.HEIGHT)), (this.groundX - this.x));
+        console.log(this.O);
         this.isJumping = true;
     }
 
