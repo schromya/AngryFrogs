@@ -1,4 +1,6 @@
 
+import { scaleValue } from './utils.js';
+
 export class Frog {
     constructor(canvas, ctx, groundX, groundY) {
         //TODO possibly rename groundX to positionX
@@ -167,6 +169,7 @@ export class Frog {
     }
 
     /*
+    Called when the mouse is presed in the Canvas.
     Checks whether the passed mouse x and y positions
     are touching the frog.
     */
@@ -184,6 +187,7 @@ export class Frog {
     }
 
     /*
+    Called when the mouse is pressed and moved in the canvas.
     Moves the middle of the frog body (NOT LEGS) based to the new mouse x and y
     positions if mouse was previously in bound for onClick.
     */
@@ -194,18 +198,32 @@ export class Frog {
         }
     }
 
-
+    /*
+    Called when the mouse is released on Canvas. If the mouse press 
+    (before the release) was within the frog bounds, this will start the frog's
+    jump.
+    */
     onMouseRelease() {
-        this.inBounds = false;
-        this.t = 0;
-        this.y0 = this.y;
-        this.yPrev = this.y0;
-        this.x0 = this.x;
+        if (this.inBounds) {
+            this.inBounds = false;
+            this.t = 0;
+            this.y0 = this.y;
+            this.yPrev = this.y0;
+            this.x0 = this.x;
 
-        //Calculate angle of frog
-        this.O =  Math.atan2((this.groundY - (this.y + this.HEIGHT)), (this.groundX - this.x));
-        console.log(this.O);
-        this.isJumping = true;
+            const yPull = this.groundY - (this.y + this.HEIGHT);
+            const xPull = this.groundX - this.x;
+
+            // Calculate jump angle of frog  based off its angle with the ground
+            this.O =  Math.atan2(yPull, xPull);
+
+            // Calculate the jump velocity based on the current "pull" distnace on the frog 
+            // and the max pull distance (estimated as ground distance from canvas bottom)
+            const distancePulled = Math.sqrt(yPull**2 + xPull**2);
+            this.v0 = scaleValue(distancePulled, 0, this.canvas.height-this.groundY, 30, 150)
+
+            this.isJumping = true;
+        }
     }
 
 
