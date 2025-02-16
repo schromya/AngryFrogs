@@ -33,7 +33,7 @@ export class Frog {
         this.x0 = 0;
         this.y0 = 0;  // Initial Y before jump
         this.yPrev = 0;
-        this.v0 = 110;  // Initial Velocity of jump
+        this.v0 = 100;  // Initial Velocity of jump
         this.O = 0; // Angle of jump TODO CALCULATE
         this.t = 0;
 
@@ -202,7 +202,7 @@ export class Frog {
         this.x0 = this.x;
 
         //Calculate angle of frog
-        this.O =  Math.atan2((this.groundX - this.y), (this.groundY - this.x));
+        this.O =  Math.atan2((this.groundY - this.y), (this.groundX - this.x));
 
         this.isJumping = true;
     }
