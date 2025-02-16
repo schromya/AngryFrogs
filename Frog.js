@@ -285,9 +285,9 @@ export class Frog {
             this.o0 =  Math.atan2(yPull, xPull);
 
             // Calculate the jump velocity based on the current "pull" distnace on the frog 
-            // and the max pull distance (estimated as ground distance from canvas bottom)
+            // and the max pull distance (estimated as half the canvas height)
             const distancePulled = Math.sqrt(yPull**2 + xPull**2);
-            this.v0 = scaleValue(distancePulled, 0, this.canvas.height-this.baseY, 30, 150)
+            this.v0 = scaleValue(distancePulled, 0, this.canvas.height/2, 30, 200)
 
             this.isJumping = true;
         }
