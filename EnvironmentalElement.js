@@ -71,19 +71,60 @@ export class Stud extends EnvironmentalElement {
 
     draw() {
         const ctx = this.ctx;
-        ctx.fillStyle = this.fill;
-        ctx.strokeStyle = this.stroke;
+        ctx.save();
+            ctx.fillStyle = this.fill;
 
-        ctx.beginPath();
-        ctx.moveTo(this.x, this.y);
-        ctx.lineTo(this.x + this.width, this.y);
+            ctx.beginPath();
+            ctx.moveTo(this.x, this.y);
+            ctx.lineTo(this.x + this.width, this.y);
 
-        ctx.lineTo(this.x + this.width, this.y+this.height);
-        ctx.lineTo(this.x, this.y+this.height);
+            ctx.lineTo(this.x + this.width, this.y+this.height);
+            ctx.lineTo(this.x, this.y+this.height);
 
-        ctx.closePath()
-        ctx.fill();
-        ctx.stroke();
+            ctx.closePath()
+            ctx.fill();
+        ctx.restore();
+
+    }
+
+}
+
+
+export class Ground extends Stud {
+    constructor(canvas, ctx, x, y, width, height) {
+
+        super(canvas, ctx, x, y, width, height);
+    }
+
+
+    draw() {
+
+        const ctx = this.ctx;
+        ctx.save();
+            super.draw()
+            
+            const arc_width = this.height/5;
+            ctx.fillStyle = "#94A344";
+            ctx.beginPath()
+            ctx.arc(this.x, this.y, arc_width, 0, Math.PI/2)
+            ctx.lineTo(this.x, this.y)
+            ctx.closePath();
+            ctx.fill();
+
+            for (let i = this.x + arc_width*1.5; i < this.x+this.width; i += arc_width*1.5) {
+                
+                ctx.beginPath()
+                ctx.arc(i, this.y, arc_width, 0, Math.PI)
+                ctx.fill();
+            }
+
+            ctx.beginPath()
+            ctx.arc(this.x+this.width, this.y, arc_width, Math.PI/2, Math.PI)
+            ctx.lineTo(this.x + this.width, this.y)
+            ctx.closePath();
+            ctx.fill();
+
+        ctx.restore();
 
     }
 
@@ -139,7 +180,7 @@ export class CurvedBeam extends EnvironmentalElement {
     checkIntersection(x, y, buffer = 0) {
 
         const tStep = 0.001;
-        const threshold = 5 + buffer;
+        const threshold = 8 + buffer;
 
         for (let t=0; t<=1; t+=tStep) {
             const P = this.bezier(t);
@@ -180,17 +221,19 @@ export class CurvedBeam extends EnvironmentalElement {
    draw() {
         const ctx = this.ctx;
 
-        ctx.strokeStyle = this.stroke;
-        ctx.lineWidth = 10
+        ctx.save();
+            ctx.strokeStyle = this.stroke;
+            ctx.lineWidth = 16
 
-        ctx.beginPath();
-        ctx.moveTo(this.P0[0], this.P0[1]);
-        ctx.bezierCurveTo(this.P1[0], this.P1[1], 
-            this.P2[0], this.P2[1],
-            this.P3[0], this.P3[1]
-            )
+            ctx.beginPath();
+            ctx.moveTo(this.P0[0], this.P0[1]);
+            ctx.bezierCurveTo(this.P1[0], this.P1[1], 
+                this.P2[0], this.P2[1],
+                this.P3[0], this.P3[1]
+                )
 
-        ctx.stroke();
+            ctx.stroke();
+        ctx.restore();
 
         
     }

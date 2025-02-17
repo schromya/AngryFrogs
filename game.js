@@ -1,5 +1,5 @@
 import { Frog } from './Frog.js';
-import { Stud, CurvedBeam } from './EnvironmentalElement.js';
+import { Stud, CurvedBeam, Ground } from './EnvironmentalElement.js';
 
 ////////////////////////// MAIN //////////////////////////
 //////////////////////////////////////////////////////////
@@ -10,21 +10,35 @@ import { Stud, CurvedBeam } from './EnvironmentalElement.js';
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext('2d');
 
+const groundY = 700;
+
 
 const environmentElems = [
 
-    
-    new Stud(canvas, ctx, 1040, 200, 300, 20),
-    new Stud(canvas, ctx, 900, 300, 300, 20),
-    new Stud(canvas, ctx, 795, 590, 300, 20),
+    // Actual Ground
+    new Ground(canvas, ctx, 0, groundY, canvas.width, canvas.height-groundY),
 
-    new CurvedBeam(canvas, ctx, 300, 300, 500, 300),
+    // Floating Ground
+    new Ground(canvas, ctx, 200, 100, 200, 20),
+    new Ground(canvas, ctx, 450, 400, 100, 20),
+    new Ground(canvas, ctx, 800, 450, 100, 20),
+    new Ground(canvas, ctx, 600, 200, 150, 20),
+    new Ground(canvas, ctx, 900, 300, 150, 20),
+    new Ground(canvas, ctx, 1040, 100, 150, 20),
+    new Ground(canvas, ctx, 1040, 100, 150, 20),
+    new Ground(canvas, ctx, 1300, 600, 100, 20),
     
     
+    new CurvedBeam(canvas, ctx, 0, 300, 500, 300),
+    new Stud(canvas, ctx, 495, 592, 300, 16),
+
+    new CurvedBeam(canvas, ctx, 1000, 500, 400, -200),
+    new Stud(canvas, ctx, 1400, 292, 100, 16),
+
 ];
 
 
-const frog =  new Frog(canvas, ctx, 200, 700, environmentElems);
+const frog =  new Frog(canvas, ctx, 200, groundY, environmentElems);
 
 
 /* 
