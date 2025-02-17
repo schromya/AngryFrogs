@@ -1,5 +1,5 @@
 import { Frog } from './Frog.js';
-import { Stud, CurvedBeam, Ground } from './EnvironmentalElement.js';
+import { Stud, CurvedBeam, Ground, Cloud } from './EnvironmentalElement.js';
 
 ////////////////////////// MAIN //////////////////////////
 //////////////////////////////////////////////////////////
@@ -34,6 +34,9 @@ const environmentElems = [
 
     new CurvedBeam(canvas, ctx, 1000, 500, 400, -200),
     new Stud(canvas, ctx, 1400, 292, 100, 16),
+
+
+
 
 ];
 

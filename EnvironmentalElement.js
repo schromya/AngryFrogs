@@ -131,6 +131,19 @@ export class Ground extends Stud {
 }
 
 
+export class Cloud extends EnvironmentalElement {
+    constructor(canvas, ctx, x, y, width, height) {
+
+        super(canvas, ctx, x, y, width, height);
+    }
+
+    draw() {
+        // TODO
+    }
+
+}
+
+
 
 
 export class CurvedBeam extends EnvironmentalElement {
@@ -236,6 +249,21 @@ export class CurvedBeam extends EnvironmentalElement {
         ctx.restore();
 
         
+    }
+
+}
+
+
+
+
+export class Mushroom extends EnvironmentalElement {
+    constructor(canvas, ctx, x, y, width, height) {
+
+        super(canvas, ctx, x, y, width, height);
+    }
+
+    draw() {
+        // TODO
     }
 
 }
